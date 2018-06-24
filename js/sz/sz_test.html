@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<a onclick="f()">hehe</a>
+</body>
+
+<script>
+
+
+
+    function f() {
+        var d = "/szseWeb/FrontController.szse?ACTIONID=7&%SOURCEURL%&SOURCECATALOGID=1842_xxpl&CATALOGID=1842_detal&TABKEY=tab2&DQRQ=2016-05-05&ZQDM=300750&ZBDM=1003";
+        var url = d;
+        var queryParam = "";
+        var a = url.indexOf("?");
+        if (a > 0) {
+            url = url.substring(0, a);
+            queryParam = d.substring(a + 1)
+        }
+
+
+
+
+
+
+        if (queryParam.indexOf("%SOURCEURL%") > 0) {
+            var c = "/szseWeb/FrontController.szse?ACTIONID=7&AJAX=AJAX-TRUE&CATALOGID=1842_xxpl&TABKEY=tab1&txtStart=2016-05-05&txtEnd=2016-05-05&tab1PAGENO=3&tab1PAGECOUNT=3&tab1RECORDCOUNT=62";
+
+            if (c == null) {
+                c = ""
+            }
+            c = c.replace(new RegExp(/&/g), "*_AND_*");
+            c = c.replace(new RegExp(/\?/g), "*_QUESTION_*");
+            c = c.replace(new RegExp(/ /g), "*_SPACE_*");
+
+            queryParam = queryParam.replace(new RegExp(/%SOURCEURL%/g), "SOURCEURL=" + c)
+        }
+
+        console.log(url);
+        console.log(queryParam);
+
+    }
+</script>
+</html>
