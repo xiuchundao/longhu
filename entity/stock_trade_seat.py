@@ -8,5 +8,5 @@ class StockTradeSeat:
         self.stock_trade_info = stock_trade_info
 
     def __repr__(self):
-        return '<StockTradeSeat %r %r>' % (self.status, self.name)
+        return '<StockTradeSeat %r %r %r %r>' % (self.stock_trade_info.code, self.stock_trade_info.name, self.status, self.name)
 

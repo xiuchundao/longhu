@@ -122,7 +122,7 @@ def parse_stock_list(stock_trade_data_soup):
 def _query_current_data():
     """查询当天上榜的数据"""
     current_date = time.strftime("%Y-%m-%d", time.localtime())
-    current_date = "2016-08-15"
+    # current_date = "2016-08-15"
 
     stock_list = query_stock_list(current_date, current_date)
 
