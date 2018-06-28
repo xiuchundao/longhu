@@ -18,9 +18,10 @@ PAGE_COUNT_KEY = "PAGE_COUNT_KEY"
 RECORD_COUNT_KEY = "RECORD_COUNT_KEY"
 
 
-def query_stock_list(start_date, end_date):
-    """查询指定日期内上榜的股票"""
-    query_data = query_stock_list_data(start_date, end_date, 1, 0, 0)
+def get_stock_list(start_date, end_date):
+    """获取指定日期内上榜的股票列表"""
+
+    query_data: dict = query_stock_list_data(start_date, end_date, 1, 0, 0)
     page_count = int(query_data[PAGE_COUNT_KEY])
 
     # 根据总页数判断查询是否有数据，有的话循环查询后面页数的数据
@@ -41,8 +42,8 @@ def query_stock_list(start_date, end_date):
 
 def query_stock_list_data(start_date, end_date, page_num, page_count, record_count):
     """查询全部上榜的股票，返回一个字典对象，其中包含了总页数、以及当前页数下的股票列表"""
-    random_num = random.random()
 
+    random_num = random.random()
     url = SZ_TRADE_LIST_URL + "&randnum=" + str(random_num) \
         + "&txtStart=" + start_date + "&txtEnd=" + end_date \
         + "&tab1PAGENO=" + str(page_num)
@@ -63,13 +64,14 @@ def query_stock_list_data(start_date, end_date, page_num, page_count, record_cou
         page_count = parse_page_count(tables[3])
         stock_list = parse_stock_list(tables[2])
 
-        print(stock_list)
+        # print(stock_list)
 
         return {STOCK_LIST_KEY: stock_list, PAGE_COUNT_KEY: page_count}
 
 
 def query_stock_trade_detail_data(trade_detail_url, stock_trade_info):
     """查询交易详情数据，即交易某支股票的全部席位"""
+
     html = urlopen(trade_detail_url)
     soup = BeautifulSoup(html.read().decode("gbk").encode("utf-8"), "html.parser")
     seats_soup = soup.find(id="REPORTID_tab2").contents[1:]
@@ -85,7 +87,8 @@ def query_stock_trade_detail_data(trade_detail_url, stock_trade_info):
 
 
 def parse_page_count(page_data_soup):
-    """解析出总页数"""
+    """解析出上榜股票的总页数"""
+
     s_page_count = page_data_soup.tr.contents[0].string
     page_count = s_page_count[s_page_count.index("共") + 1:len(s_page_count) - 1]
 
@@ -94,9 +97,9 @@ def parse_page_count(page_data_soup):
 
 def parse_stock_list(stock_trade_data_soup):
     """解析出上榜的股票列表"""
-    stock_soups = stock_trade_data_soup.contents[1:]
 
     stock_trade_info_list = []
+    stock_soups = stock_trade_data_soup.contents[1:]
 
     for stock_soup in stock_soups:
         rows = stock_soup.contents
@@ -108,13 +111,10 @@ def parse_stock_list(stock_trade_data_soup):
         # FIXME 查询个股交易席位详情需要传递 source_url 参数，
         # FIXME 简单粗暴删除掉在跨日期查询的时候会失败，需重新处理 source_url
         trade_detail_url = SZ_HOST + trade_detail_url.replace("&%SOURCEURL%", "")
-
         seats = query_stock_trade_detail_data(trade_detail_url, stock_trade_info)
+
         stock_trade_info.trade_seats = seats
-
         stock_trade_info_list.append(stock_trade_info)
-
-        # print(stock_trade_info)
 
     return stock_trade_info_list
 
@@ -122,11 +122,12 @@ def parse_stock_list(stock_trade_data_soup):
 def _query_current_data():
     """查询当天上榜的数据"""
     current_date = time.strftime("%Y-%m-%d", time.localtime())
-    # current_date = "2016-08-15"
+    current_date = "2018-06-27"
 
-    stock_list = query_stock_list(current_date, current_date)
+    stock_list = get_stock_list(current_date, current_date)
 
-    print(len(stock_list))
+    for stock in stock_list:
+        print(stock)
 
 
 if __name__ == '__main__':
